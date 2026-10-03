@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Medicine Planner</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1f7a6d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Planner">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#fbf7f0;--card:#fff;--ink:#23303a;--mut:#6b7780;--acc:#1f7a6d;--acc2:#d98e04;--line:#e6dfd2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a1e;--card:#1b262c;--ink:#eef2f3;--mut:#95a3ab;--acc:#4fc3b0;--acc2:#f0b43c;--line:#2d3b42}}
+:root[data-theme="dark"]{--bg:#121a1e;--card:#1b262c;--ink:#eef2f3;--mut:#95a3ab;--acc:#4fc3b0;--acc2:#f0b43c;--line:#2d3b42}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Georgia,'Times New Roman',serif;min-height:100vh}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+.bar{flex:1;height:8px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s}
+header span{font:600 13px system-ui,sans-serif;color:var(--mut);white-space:nowrap}
+main{max-width:760px;margin:0 auto;padding:20px 16px 90px}
+.slide{display:none;animation:in .35s}.slide.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+h1{font-size:2.1rem;line-height:1.15;margin:.2em 0}
+h2{font-size:1.6rem;margin:.1em 0 .2em}
+.sub{color:var(--mut);font-style:italic;margin:0 0 16px}
+.hero{font-size:64px;text-align:center;margin:10px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.card h3{margin:0 0 8px;font:700 13px system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+label.t{display:flex;gap:12px;align-items:flex-start;padding:10px 4px;border-bottom:1px dashed var(--line);cursor:pointer}
+label.t:last-child{border-bottom:0}
+label.t input{width:22px;height:22px;accent-color:var(--acc);flex:none;margin-top:3px}
+label.t input:checked+span{text-decoration:line-through;color:var(--mut)}
+.quote{border-left:4px solid var(--acc2);padding:6px 14px;font-style:italic;margin:14px 0}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.tag{display:inline-block;font:600 12px system-ui,sans-serif;background:var(--acc);color:#fff;border-radius:99px;padding:2px 10px;margin-right:6px}
+textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--bg);color:var(--ink);font:inherit;resize:vertical}
+.water{display:flex;gap:8px;flex-wrap:wrap}
+.water button{width:44px;height:44px;border-radius:50%;border:2px solid var(--acc);background:transparent;font-size:20px;cursor:pointer}
+.water button.f{background:var(--acc)}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+nav button,.reset{font:600 15px system-ui,sans-serif;border:0;border-radius:12px;padding:11px 20px;background:var(--acc);color:#fff;cursor:pointer}
+nav button:disabled{opacity:.35}
+.dots{display:flex;gap:6px}.dots b{width:9px;height:9px;border-radius:50%;background:var(--line);cursor:pointer}.dots b.on{background:var(--acc2)}
+.reset{background:transparent;color:var(--mut);border:1px solid var(--line);font-size:13px;padding:6px 12px;margin-top:8px}
+</style></head><body>
+<header><span>🩺 My Planner</span><div class="bar"><i id="pb"></i></div><span id="pt">0%</span></header>
+<main>
+
+<section class="slide on">
+<div class="hero">🌅🩺✨</div>
+<h1>My future is medicine, and I'm building it with care.</h1>
+<p class="sub">A plan to guide my days, protect my focus, and grow into the doctor I'm becoming.</p>
+<div class="quote">My passion is medicine. I will hold it close, give it time, and treat it well, because I am worth the effort.</div>
+<div class="card"><h3>Today's intention</h3><textarea data-k="intent" placeholder="One sentence: what would make today a good day?"></textarea></div>
+<p class="sub">Tap Next, or use the arrow keys. Your ticks and notes are saved on this device.</p>
+</section>
+
+<section class="slide">
+<h2>🌙 Daily Rhythm</h2><p class="sub">Reset every day. Small habits make the big goals possible.</p>
+<div class="card"><h3>Today's checklist</h3><div data-daily>
+<label class="t"><input type="checkbox" data-k="d1"><span>Woke at 12:00 AM and started my study block</span></label>
+<label class="t"><input type="checkbox" data-k="d2"><span>Morning prayer</span></label>
+<label class="t"><input type="checkbox" data-k="d3"><span>Protected my focus: screen time kept low</span></label>
+<label class="t"><input type="checkbox" data-k="d4"><span>Time with people I care about (balanced socializing)</span></label>
+<label class="t"><input type="checkbox" data-k="d5"><span>Followed my plan for today</span></label>
+<label class="t"><input type="checkbox" data-k="d6"><span>Night prayer, then sleep by 6:00-7:00 PM</span></label>
+</div></div>
+<div class="card"><h3>Hydration: goal 1.5 L (tap each 250 ml)</h3><div class="water" id="water"></div></div>
+<div class="quote">Screen time is the thief of my future. I choose my future.</div>
+</section>
+
+<section class="slide">
+<h2>🩻 Clinical Growth</h2><p class="sub">Confident hands, a sharp mind, and a solid foundation.</p>
+<div class="card"><h3>Weekly habits</h3>
+<label class="t"><input type="checkbox" data-k="c1"><span>Practiced History taking until it feels natural</span></label>
+<label class="t"><input type="checkbox" data-k="c2"><span>Practiced Physical examination with confidence</span></label>
+<label class="t"><input type="checkbox" data-k="c3"><span>Read the science behind the topic, not just the summary</span></label>
+<label class="t"><input type="checkbox" data-k="c4"><span>Did a focused Step prep session</span></label></div>
+<div class="card"><h3>Weekly reflection: what I learned</h3><textarea data-k="clin" placeholder="One thing I understood better this week..."></textarea></div>
+</section>
+
+<section class="slide">
+<h2>🌍 Beyond the Wards</h2><p class="sub">Opportunities come to those who show up and stay visible.</p>
+<div class="grid">
+<div class="card"><h3>🔬 Research</h3>Train myself: watch tutorials, apply what I learn, and stay active.</div>
+<div class="card"><h3>🇺🇸 USMLE</h3>Follow what's new and learn from others' experiences.</div>
+<div class="card"><h3>💼 LinkedIn</h3>Use it properly, reset my algorithm toward medicine, and post.</div>
+<div class="card"><h3>🎶 A skill</h3>Choose one and practice it regularly, for example the Begena.</div></div>
+<div class="card"><h3>This week</h3>
+<label class="t"><input type="checkbox" data-k="e1"><span>Worked on my research learning</span></label>
+<label class="t"><input type="checkbox" data-k="e2"><span>Applied to at least one opportunity</span></label>
+<label class="t"><input type="checkbox" data-k="e3"><span>Posted or engaged on LinkedIn</span></label>
+<label class="t"><input type="checkbox" data-k="e4"><span>Practiced my chosen skill</span></label></div>
+</section>
+
+<section class="slide">
+<h2>🎯 C2 Minor Goals</h2><p class="sub">Four milestones. Tick them off as they come true.</p>
+<div class="card">
+<label class="t"><input type="checkbox" data-k="g1"><span><b>Step preparation:</b> prepare well and get my exam</span></label>
+<label class="t"><input type="checkbox" data-k="g2"><span><b>Research:</b> publish or start a study as PI (IM with Dr Ayantu, OBGYN with SPIRHR)</span></label>
+<label class="t"><input type="checkbox" data-k="g3"><span><b>Travel:</b> visit a new country</span></label>
+<label class="t"><input type="checkbox" data-k="g4"><span><b>Grades:</b> keep my focus on the curriculum</span></label></div>
+<div class="quote">Step by step, the match becomes possible.</div>
+</section>
+
+<section class="slide">
+<h2>🤝 Mentors &amp; Next Steps</h2><p class="sub">Guidance I've been given, now turned into action.</p>
+<div class="card"><h3><span class="tag">Dr Ayantu</span></h3>
+<label class="t"><input type="checkbox" data-k="m1"><span>Earn a departmental certificate to strengthen my match application</span></label>
+<label class="t"><input type="checkbox" data-k="m2"><span>Pursue research as PI, including funding</span></label>
+<label class="t"><input type="checkbox" data-k="m3"><span>Look for a US rotation to build links and connections</span></label></div>
+<div class="card"><h3><span class="tag">Dr Tigist Bacha</span></h3>
+<label class="t"><input type="checkbox" data-k="m4"><span>Build match connections</span></label>
+<label class="t"><input type="checkbox" data-k="m5"><span>Explore a US rotation</span></label>
+<label class="t"><input type="checkbox" data-k="m6"><span>Start a QI (quality improvement) project</span></label></div>
+</section>
+
+<section class="slide">
+<h2>🌟 Weekly Check-in</h2><p class="sub">Every Sunday, one honest minute with myself.</p>
+<div class="card"><h3>What went well?</h3><textarea data-k="w1"></textarea></div>
+<div class="card"><h3>What will I improve next week?</h3><textarea data-k="w2"></textarea></div>
+<div class="quote">I'm proud of the effort I'm giving. Medicine is waiting for me.</div>
+<button class="reset" id="rs">Clear today's daily checklist</button>
+</section>
+</main>
+<nav><button id="pv">Back</button><div class="dots" id="dots"></div><button id="nx">Next</button></nav>
+<script>
+var S=document.querySelectorAll('.slide'),i=0,store={};
+function ld(){try{store=JSON.parse(localStorage.getItem('planner')||'{}')}catch(e){store={}}}
+function sv(){try{localStorage.setItem('planner',JSON.stringify(store))}catch(e){}}
+ld();
+var today=new Date().toDateString();
+if(store._day!==today){['d1','d2','d3','d4','d5','d6','water'].forEach(function(k){delete store[k]});store._day=today;sv()}
+var dots=document.getElementById('dots');
+S.forEach(function(_,n){var b=document.createElement('b');b.onclick=function(){go(n)};dots.appendChild(b)});
+function go(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach(function(s,k){s.classList.toggle('on',k===i)});
+[].forEach.call(dots.children,function(b,k){b.classList.toggle('on',k===i)});
+document.getElementById('pv').disabled=i===0;document.getElementById('nx').disabled=i===S.length-1;window.scrollTo(0,0)}
+document.getElementById('pv').onclick=function(){go(i-1)};document.getElementById('nx').onclick=function(){go(i+1)};
+document.onkeydown=function(e){if(e.target.tagName==='TEXTAREA')return;if(e.key==='ArrowRight')go(i+1);if(e.key==='ArrowLeft')go(i-1)};
+var boxes=document.querySelectorAll('input[data-k]');
+function prog(){var d=0;boxes.forEach(function(b){if(b.checked)d++});var p=Math.round(d/boxes.length*100);
+document.getElementById('pb').style.width=p+'%';document.getElementById('pt').textContent=p+'%'}
+boxes.forEach(function(b){b.checked=!!store[b.dataset.k];b.onchange=function(){store[b.dataset.k]=b.checked;sv();prog()}});
+document.querySelectorAll('textarea').forEach(function(t){t.value=store[t.dataset.k]||'';t.oninput=function(){store[t.dataset.k]=t.value;sv()}});
+var w=document.getElementById('water');
+for(var j=0;j<6;j++){(function(j){var b=document.createElement('button');b.textContent='💧';
+function r(){b.classList.toggle('f',(store.water||0)>j)}r();
+b.onclick=function(){store.water=(store.water||0)>j?j:j+1;sv();[].forEach.call(w.children,function(x,k){x.classList.toggle('f',(store.water||0)>k)})};w.appendChild(b)})(j)}
+document.getElementById('rs').onclick=function(){['d1','d2','d3','d4','d5','d6','water'].forEach(function(k){delete store[k]});sv();location.reload()};
+go(0);prog();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+</script></body></html>
